@@ -1,0 +1,71 @@
+
+// Thank you for providing your code. Based on the code you shared, it looks like the issue might be related to how you are constructing the URL in the fetchCars function. Make sure there are no extra spaces or line breaks in your URL string. The URL construction should be done without any spaces.
+
+// Here's a modified version of your fetchCars function with improved formatting:
+
+// javascript
+// Copy code
+
+import { manufacturers } from "@/constants";
+import { CarProps, FilterProps } from "@/types";
+export async function fetchCars(filters: FilterProps) {
+    const { manufacturer, year, model, limit, fuel } = filters;
+
+    const headers = {
+        'X-RapidAPI-Key': 'c95b3c1381mshb41af339bc2fdb6p1bd2cejsn5e624f3f20f3',
+        'X-RapidAPI-Host': 'cars-by-api-ninjas.p.rapidapi.com'
+    };
+
+    const apiUrl = `https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?make=${manufacturer}&year=${year}&model=${model}&limit=${limit}&fuel_type=${fuel}`;
+
+    const response = await fetch(apiUrl, {
+        headers: headers,
+    });
+
+    const result = await response.json();
+
+    return result;
+}
+
+export const calculateCarRent = (city_mpg: number, year: number) => {
+    const basePricePerDay = 50; // Base rental price per day in dollars
+    const mileageFactor = 0.1; // Additional rate per mile driven
+    const ageFactor = 0.05; // Additional rate per year of vehicle age
+  
+    // Calculate additional rate based on mileage and age
+    const mileageRate = city_mpg * mileageFactor;
+    const ageRate = (new Date().getFullYear() - year) * ageFactor;
+  
+    // Calculate total rental rate per day
+    const rentalRatePerDay = basePricePerDay + mileageRate + ageRate;
+  
+    return rentalRatePerDay.toFixed(0);
+  };
+
+export const generateCarImageUrl = (car: CarProps, angle?: string) => {
+
+    const url = new URL('https://cdn.imagin.studio/getimage');
+    const { make, year, model } = car;
+
+    url.searchParams.append('customer', 'hrjavascript-mastery');
+    url.searchParams.append('make', make);
+    url.searchParams.append('modelFamily', model.split(' ')[0]);
+    url.searchParams.append('zoomType', 'fullscreen');
+    url.searchParams.append('modelYear', `${year}`);
+    url.searchParams.append('angle', `${angle}`);
+    
+    return `${url}`;
+
+}
+
+
+export const updateSearchParams = (type: string, value:string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    
+        searchParams.set(type, value)
+
+        const newPathname = `${window.location.pathname}?${searchParams.toString()}`;
+
+        return newPathname;
+}
